@@ -35,7 +35,7 @@
                     <div class="right">
                         <form action="." method="post">
                             <input type="hidden" name="action" value="viewAssignments">
-                            <input type="submit" class="form-button-duo" value="Add Assignment">
+                            <input type="submit" class="form-button-duo" value="View Jobs">
                         </form>   
                     </div>
                 </div>
