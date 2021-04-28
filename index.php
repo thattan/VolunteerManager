@@ -9,6 +9,9 @@ require_once 'models/Event.php';
 require_once 'models/database.php';
 require_once 'models/volunteerDB.php';
 require_once 'models/Volunteer.php';
+require_once 'models/JobDB.php';
+require_once 'models/JobInstance.php';
+require_once 'models/JobType.php';
 
 session_start();
 date_default_timezone_set('America/Chicago');
@@ -21,8 +24,7 @@ if ($action == null) {
     }
 }
 
-function validateDate($date)
-{
+function validateDate($date) {
     $format = 'Y-m-d H:i:s';
     $d = DateTime::createFromFormat($format, $date);
     return $d && $d->format($format) == $date;
@@ -39,7 +41,7 @@ switch ($action) {
         include './views/login.php';
         die();
         break;
-    
+
     case 'login':
         $_SESSION['organization'] = '';
         $email = filter_input(INPUT_POST, 'email');
@@ -67,11 +69,11 @@ switch ($action) {
             $organization = OrganizationDB::get_organization_by_email($email);
             $oldPassword = $organization->getPassword();
             $isPassword = password_verify($password, $oldPassword);
-            
+
             if ($isPassword == FALSE) {
                 $error = TRUE;
-                $emailError= "Email or Password is incorrect";
-            } 
+                $emailError = "Email or Password is incorrect";
+            }
 
             if ($error == FALSE) {
                 $_SESSION['organization'] = $organization;
@@ -81,7 +83,7 @@ switch ($action) {
                 include './views/login.php';
             }
         } else {
-            $emailError= "Email or Password is incorrect";
+            $emailError = "Email or Password is incorrect";
             include './views/login.php';
         }
         die();
@@ -202,7 +204,7 @@ switch ($action) {
                 }
             }
         }
-        
+
         If ($error == FALSE && $_SESSION['organization'] == '') {
             $isRegister = FALSE;
             $created_date = New DateTime();
@@ -219,19 +221,19 @@ switch ($action) {
             $organization = New Organization($organizationName, $email, $phone,
                     $oldOrganization->getPassword(), $oldOrganization->getCreated_date(), $contactPerson);
             $organization->setId($oldOrganization->getId());
-            OrganizationDB::update_organization($organization); 
+            OrganizationDB::update_organization($organization);
             $organization = OrganizationDB::get_organization_by_id($organization->getId());
             $_SESSION['organization'] = $organization;
             include './views/viewOrganization.php';
         } else {
             $organization = New Organization($organizationName, $email, $phone,
-                $password, '', $contactPerson);
+                    $password, '', $contactPerson);
             $isRegister = TRUE;
             include './views/organization.php';
         }
         die();
         break;
-        
+
     case 'editOrganization':
         $organizationNameError = '';
         $emailError = '';
@@ -243,7 +245,7 @@ switch ($action) {
         include './views/organization.php';
         die();
         break;
-    
+
     case 'viewOrganization':
         $organization = $_SESSION['organization'];
         $_SESSION['event'] = '';
@@ -251,7 +253,7 @@ switch ($action) {
         include './views/viewOrganization.php';
         die();
         break;
-    
+
     case 'viewEvents':
         $_SESSION['event'] = '';
         $organization = $_SESSION['organization'];
@@ -336,7 +338,7 @@ switch ($action) {
             $_SESSION['event'] = $event;
             $volunteers = VolunteerDB::get_volunteers_by_eventId($event->getId());
             include './views/viewEvent.php';
-        }else {
+        } else {
             $event = New Event($eventName, $eventDate, '', $volunteersNeeded);
             include './views/event.php';
         }
@@ -409,7 +411,7 @@ switch ($action) {
             $phoneError = "Phone number cannot be empty";
             $error = TRUE;
         }
-        
+
         if ($error == FALSE && $_SESSION['volunteer'] == '') {
             $createdDate = New DateTime();
             $volunteer = New Volunteer($firstName, $lastName, $email, $phone, $createdDate);
@@ -444,7 +446,7 @@ switch ($action) {
         include './views/addVolunteers.php';
         die();
         break;
-    
+
     case 'addVolunteerToEvent':
         $event = $_SESSION['event'];
         $eventId = $event->getId();
@@ -454,7 +456,7 @@ switch ($action) {
         include './views/viewEvent.php';
         die();
         break;
-    
+
     case 'viewEvent':
         $eventId = filter_input(INPUT_GET, 'eventId');
         $event = EventDB::get_event_by_id($eventId);
@@ -462,8 +464,8 @@ switch ($action) {
         $volunteers = VolunteerDB::get_volunteers_by_eventId($event->getId());
         include './views/viewEvent.php';
         die();
-        break;      
-    
+        break;
+
     case 'editVolunteer':
         $firstNameError = '';
         $lastNameError = '';
@@ -477,8 +479,8 @@ switch ($action) {
         $_SESSION['volunteer'] = $volunteer;
         include './views/volunteer.php';
         die();
-        break;        
-        
+        break;
+
     case 'viewVolunteer':
         $volunteerId = filter_input(INPUT_GET, 'volunteerId');
         $volunteer = VolunteerDB::get_volunteer_by_id($volunteerId);
@@ -486,7 +488,7 @@ switch ($action) {
         include './views/viewVolunteer.php';
         die();
         break;
-    
+
     case 'deleteVolunteer':
         $volunteerId = filter_input(INPUT_GET, 'volunteerId');
         $organization = $_SESSION['organization'];
@@ -496,7 +498,7 @@ switch ($action) {
         include './views/volunteers.php';
         die();
         break;
-    
+
     case 'deleteEvent':
         $eventId = filter_input(INPUT_GET, 'eventId');
         $organization = $_SESSION['organization'];
@@ -506,7 +508,7 @@ switch ($action) {
         include './views/events.php';
         die();
         break;
-    
+
     case 'removeVolunteer':
         $event = $_SESSION['event'];
         $volunteerId = filter_input(INPUT_GET, 'volunteerId');
@@ -515,13 +517,109 @@ switch ($action) {
         include './views/viewEvent.php';
         die();
         break;
-    
+
     case 'logout':
         $_SESSION['organization'] = '';
         $_SESSION['event'] = '';
         $emailError = '';
         $passwordError = '';
         include './views/login.php';
+        die();
+        break;
+
+    case 'viewJobs':
+
+        $eventId = filter_input(INPUT_POST, 'eventId');
+        $jobTypes = JobDB::get_job_types_by_eventId($eventId);
+        $jobInstances = JobDB::get_job_instances_by_eventId($eventId);
+        
+        include './views/viewJobs.php';
+        die();
+        break;
+
+    case 'viewAddJobType':
+
+        $jobType = New JobType();
+        $jobNameError = '';
+        include './views/addJobType.php';
+        die();
+        break;
+
+    case 'addJobType':
+        $event = $_SESSION['event'];
+        $organization = $_SESSION['organization'];
+        $jobName = filter_input(INPUT_POST, 'jobName');
+        $jobNameError = '';
+
+        If ($jobName == '') {
+            $jobNameError = 'Job Name cannot be empty';
+            $jobType = new JobType($jobName);
+            include './views/addJobType.php';
+        } else {
+            $jobType = New JobType($jobName);
+
+            JobDB::add_jobType($jobType, $event->getId(), $organization->getId());
+
+            $jobTypes = JobDB::get_job_types_by_eventId($event->getId());
+            $jobInstances = JobDB::get_job_instances_by_eventId($event->getId());
+
+            include './views/viewJobs.php';
+        }
+
+        die();
+        break;
+
+    case 'viewAddJobInstance':
+
+        $jobTypeID = filter_input(INPUT_GET, 'jobTypeID');
+        $jobInstance = New JobInstance();
+        $volunteerNameError = '';
+        $startTimeError = '';
+        $endTimeError = '';
+        
+        include './views/addJobInstance.php';
+        die();
+        break;
+
+    case 'addJobInstance':
+        $event = $_SESSION['event'];
+        $volunteerName = filter_input(INPUT_POST, 'volunteerName');
+        $startTime = filter_input(INPUT_POST, 'startTime');
+        $endTime = filter_input(INPUT_POST, 'endTime');
+        $jobTypeID = filter_input(INPUT_POST, 'jobTypeID');
+        $error = false;
+        $volunteerNameError = '';
+        $startTimeError = '';
+        $endTimeError = '';
+        
+        if ($volunteerName == '') {
+            $error = true;
+            $volunteerNameError = 'Volunteer Name cannot be empty';
+        }
+        
+        if ($startTime == '') {
+            $error = true;
+            $startTimeError = 'Start time cannot be empty';
+        }
+        
+        if ($endTime == '') {
+            $error = true;
+            $endTimeError = 'End time cannot be empty';
+        }
+       
+        if ($error == false) {
+            $jobInstance = new JobInstance($startTime, $endTime, $volunteerName);
+            
+            JobDB::add_jobInstance($jobInstance, $event->getId(), $jobTypeID);
+            
+            $jobTypes = JobDB::get_job_types_by_eventId($event->getId());
+            $jobInstances = JobDB::get_job_instances_by_eventId($event->getId());
+            
+            include './views/viewJobs.php';
+        } else {
+            $jobInstance = new JobInstance($startTime, $endTime, $volunteerName);
+            include './views/addJobInstance.php';
+        }
         die();
         break;
 }

@@ -34,8 +34,20 @@
                     </div>
                     <div class="right">
                         <form action="." method="post">
-                            <input type="hidden" name="action" value="viewAssignments">
+                            <input type="hidden" name="action" value="viewJobs">
+                            <input type="hidden" name="eventId" value="<?php echo htmlspecialchars($event->getId()) ?>">
                             <input type="submit" class="form-button-duo" value="View Jobs">
+                        </form>   
+                    </div>
+                    <div class="left">
+                        <form action="." method="post">
+                            <input type="hidden" name="action" value="emailTest">
+                            <input type="submit" class="form-button-duo" value="Email">
+                        </form>   
+                    </div>
+                    <div class="right">
+                        <form action="." method="post">
+                            <br><br> <br><br>
                         </form>   
                     </div>
                 </div>

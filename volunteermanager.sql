@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 15, 2020 at 05:01 AM
+-- Generation Time: Apr 28, 2021 at 05:13 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.9
 
@@ -24,37 +24,9 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `assignment`
---
-
-DROP TABLE IF EXISTS `assignment`;
-CREATE TABLE `assignment` (
-  `pk_id` int(11) NOT NULL,
-  `fk_event_id` int(11) NOT NULL,
-  `assignment_name` varchar(100) NOT NULL,
-  `volunteer_number` varchar(50) NOT NULL,
-  `created_date` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `assignmentvolunteers`
---
-
-DROP TABLE IF EXISTS `assignmentvolunteers`;
-CREATE TABLE `assignmentvolunteers` (
-  `fk_assignment_id` int(11) NOT NULL,
-  `fk_volunteer_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `event`
 --
 
-DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
   `pk_id` int(11) NOT NULL,
   `fk_organization_id` int(11) NOT NULL,
@@ -74,7 +46,12 @@ INSERT INTO `event` (`pk_id`, `fk_organization_id`, `event_name`, `event_date`, 
 (12, 15, 'Dog Races', '2020-01-01 08:30:00', '2020-12-13 02:23:07', '21'),
 (26, 18, 'Saturday Food Drive', '2020-01-01 08:30:00', '2020-12-14 21:28:57', '10'),
 (27, 18, 'Sunday Food Drive', '2020-01-01 08:30:00', '2020-12-14 21:43:22', '123'),
-(28, 15, 'Food Drive', '2021-01-28 08:30:00', '2020-12-14 21:51:04', '12');
+(28, 15, 'Food Drive', '2021-01-28 08:30:00', '2020-12-14 21:51:04', '12'),
+(29, 21, 'County Fair', '2020-01-01 08:30:00', '2021-03-13 19:39:59', '123'),
+(30, 24, 'County Fair', '2020-01-01 08:30:00', '2021-04-19 19:53:58', '123'),
+(31, 25, 'County Fair', '2020-01-01 08:30:00', '2021-04-24 11:13:48', '123'),
+(32, 26, 'County Fair', '2020-01-01 08:30:00', '2021-04-25 22:32:27', '123'),
+(33, 15, 'Birthday Party', '2020-01-01 08:30:00', '2021-04-27 15:57:53', '123');
 
 -- --------------------------------------------------------
 
@@ -82,7 +59,6 @@ INSERT INTO `event` (`pk_id`, `fk_organization_id`, `event_name`, `event_date`, 
 -- Table structure for table `eventvolunteers`
 --
 
-DROP TABLE IF EXISTS `eventvolunteers`;
 CREATE TABLE `eventvolunteers` (
   `fk_event_id` int(11) NOT NULL,
   `fk_volunteer_id` int(11) NOT NULL
@@ -102,7 +78,87 @@ INSERT INTO `eventvolunteers` (`fk_event_id`, `fk_volunteer_id`) VALUES
 (23, 15),
 (27, 18),
 (26, 16),
-(28, 8);
+(28, 8),
+(30, 21),
+(30, 21),
+(33, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobinstance`
+--
+
+CREATE TABLE `jobinstance` (
+  `pk_id` int(11) NOT NULL,
+  `startTime` varchar(15) NOT NULL,
+  `endTime` varchar(15) NOT NULL,
+  `jobTypeID` int(11) NOT NULL,
+  `volunteerName` varchar(50) NOT NULL,
+  `eventID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `jobinstance`
+--
+
+INSERT INTO `jobinstance` (`pk_id`, `startTime`, `endTime`, `jobTypeID`, `volunteerName`, `eventID`) VALUES
+(1, '12', '12', 0, 'TEST NAME', 32),
+(2, '12', '12', 0, 'TEST NAME', 32),
+(3, '12', '12', 1, 'TEST NAME', 32),
+(4, '12', '12', 1, 'TEST NAME', 32),
+(5, '12', '12', 1, 'TEST NAME', 32),
+(6, '12', '12', 1, 'TEST NAME', 32),
+(7, '1234', '1234', 2, '1234', 32),
+(8, '12', '12', 3, '1234', 32),
+(9, '12', '12', 3, '1234', 32),
+(10, '12', '12', 3, '1234', 32),
+(11, '12', '12', 3, '1234', 32),
+(12, '12', '12', 3, '1234', 32),
+(13, '12', '12', 3, '1234', 32),
+(14, '12', '12', 3, '1234', 32),
+(15, '12', '12', 3, '1234', 32),
+(16, '12', '12', 3, '1234', 32),
+(17, '12', '12', 3, '1234', 32),
+(18, '12', '12', 3, '1234', 32),
+(19, '12', '12', 3, '1234', 32),
+(20, '12', '12', 3, '1234', 32),
+(21, '12', '12', 3, '1234', 32),
+(22, '12', '12', 3, '1234', 32),
+(23, '12', '12', 3, '1234', 32),
+(24, '12', '12', 3, '1234', 32),
+(25, '12', '12', 3, '1234', 32),
+(26, '12', '12', 3, '1234', 32),
+(27, '12', '12', 3, '1234', 32),
+(28, '12', '12', 3, '1234', 32),
+(29, '8am', '3pm', 4, 'Quinn', 33),
+(30, '3pm', '8pm', 5, 'Tyler', 33),
+(31, '9pj', '999', 5, 'Quinn', 33),
+(32, 'asdf', 'asdf', 5, 'asdf', 33);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobtype`
+--
+
+CREATE TABLE `jobtype` (
+  `pk_id` int(11) NOT NULL,
+  `jobName` varchar(50) NOT NULL,
+  `eventID` int(11) NOT NULL,
+  `organizationID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `jobtype`
+--
+
+INSERT INTO `jobtype` (`pk_id`, `jobName`, `eventID`, `organizationID`) VALUES
+(1, 'TEST JOB', 32, 26),
+(2, 'NEXT JOB', 32, 26),
+(3, 'NEST ONE', 32, 26),
+(4, 'Clown', 33, 15),
+(5, 'Sword Swallower', 33, 15);
 
 -- --------------------------------------------------------
 
@@ -110,7 +166,6 @@ INSERT INTO `eventvolunteers` (`fk_event_id`, `fk_volunteer_id`) VALUES
 -- Table structure for table `organization`
 --
 
-DROP TABLE IF EXISTS `organization`;
 CREATE TABLE `organization` (
   `pk_id` int(11) NOT NULL,
   `organization_name` varchar(150) NOT NULL,
@@ -126,8 +181,16 @@ CREATE TABLE `organization` (
 --
 
 INSERT INTO `organization` (`pk_id`, `organization_name`, `email`, `phone`, `password`, `created_date`, `contact_person_name`) VALUES
-(15, 'Test Organization', 'test@test.com', '4025404447', '$2y$10$1UN.AGv7PO.R.HU9X3BV9.2ODx6WFCaEnEf9PZwvcEafO9hVxrbZ.', '2020-12-13 01:38:57', 'New Name'),
-(18, 'Food Bank', 'foodbank@foodbank.com', '4025404447', '$2y$10$A1H2/yWnjf9UBWIRPmNXzO5hwxnP9KAAcBwa4pLasKLWMEXu/Xix2', '2020-12-14 21:28:00', 'Brett');
+(15, 'Test Organization', 'test@test.com', '4025404447', '$2y$10$XweFeddw2ri9shE1WE0iiukJnzXAnWkucxuXtURPfZKrCVkzompny', '2020-12-13 01:38:57', 'New Name'),
+(18, 'Food Bank', 'foodbank@foodbank.com', '4025404447', '$2y$10$A1H2/yWnjf9UBWIRPmNXzO5hwxnP9KAAcBwa4pLasKLWMEXu/Xix2', '2020-12-14 21:28:00', 'Brett'),
+(19, 'Test Organization Updated', 'tylerhattan@yahoo.com', '4025404447', '$2y$10$SC8wAQokWUHBEwot5lR/AugHTHSYqtioSR.dP/21PujQzbw3YPbdO', '2020-12-15 09:40:06', 'Test'),
+(20, 'Test Organization Updated', 'tt@me.com', '4025404447', '$2y$10$Z1YJPOCKv/5bcANkqDUnru70BNunF4azjYtrcplCJzBIHqeJ7YUQK', '2020-12-15 09:41:35', 'Test'),
+(21, 'qwer', 'we@me.com', '0000000000', '$2y$10$vY3Eif3.oK7dA3xZ786HJeUNFQsM2aHU8KVPTdSrHSSksq.JPH38a', '2021-03-13 19:39:42', 'asdf'),
+(22, 'Test Organization Updated', 'tya@me.com', '4025404447', '$2y$10$DHcpsHVqzvSHvHETz3t..OdUkf6SwNDj/Su.DXZ9DLlM4AB5zfT/G', '2021-04-04 17:53:41', 'Tyler David Hattan'),
+(23, 'Test', 'wer@me.com', '3213213211', '$2y$10$dSu2nclr3e13fPscdkHK6.J9hzo5a9QqtKRPA3dprC25SUUGvDvae', '2021-04-07 23:50:54', 'test'),
+(24, 'Test', 'test@me.com', '4025404447', '$2y$10$ltRlKqM2Vl8l2ZS6Nr1krOKroXsC.hTPjpOdQTU9xvFmAnIlUJiDC', '2021-04-19 19:53:41', 'Tyler David Hattan'),
+(25, 'asdf', 'asdf@me.com', '4025404447', '$2y$10$Ix9KiIsV/Xi/tp7lD/ID7Of9NkBOmOUhKkGw4/J8OXPM9y//mlCEK', '2021-04-24 11:13:32', 'Tyler David Hattan'),
+(26, 'Test Account', 'testaccount@me.com', '4025404447', '$2y$10$XweFeddw2ri9shE1WE0iiukJnzXAnWkucxuXtURPfZKrCVkzompny', '2021-04-25 22:32:10', 'test');
 
 -- --------------------------------------------------------
 
@@ -135,7 +198,6 @@ INSERT INTO `organization` (`pk_id`, `organization_name`, `email`, `phone`, `pas
 -- Table structure for table `volunteer`
 --
 
-DROP TABLE IF EXISTS `volunteer`;
 CREATE TABLE `volunteer` (
   `pk_id` int(11) NOT NULL,
   `fk_organization_id` int(11) NOT NULL,
@@ -161,25 +223,16 @@ INSERT INTO `volunteer` (`pk_id`, `fk_organization_id`, `first_name`, `last_name
 (11, 15, 'Test', 'Test', 'newtest@me.com', 'test', '2020-12-13 21:08:28'),
 (16, 18, 'Tyler', 'Hattan', 'tylerhattan@yahoo.com', '4025404447', '2020-12-14 21:39:41'),
 (17, 18, 'John', 'Johnson', 'jsmith@me.com', '4024722310', '2020-12-14 21:42:20'),
-(18, 18, 'Babe', 'Ruth', 'baberuth@gmail.com', '4024506089', '2020-12-14 21:42:43');
+(18, 18, 'Babe', 'Ruth', 'baberuth@gmail.com', '4024506089', '2020-12-14 21:42:43'),
+(19, 23, 'Tyler', 'Hattan', 'tylerhattan@yahoo.com', '4025404447', '2021-04-07 23:52:19'),
+(21, 24, 'Tyler', 'Hattan', 'tylerhattan@yahoo.com', '4025404447', '2021-04-19 19:54:10'),
+(22, 24, 'Kevin', 'Wesley', 'test@test.com', '4024722310', '2021-04-19 19:54:18'),
+(23, 25, 'Michelle', 'Bish', 'mb@me.com', '4025404447', '2021-04-24 11:14:22'),
+(24, 25, 'tanner', 'bish', 'tb@me.com', '4025404447', '2021-04-24 11:14:37');
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `assignment`
---
-ALTER TABLE `assignment`
-  ADD PRIMARY KEY (`pk_id`),
-  ADD KEY `fk_eventId_assignmentTable` (`fk_event_id`);
-
---
--- Indexes for table `assignmentvolunteers`
---
-ALTER TABLE `assignmentvolunteers`
-  ADD KEY `fk_assignmentId_assignmentvolunteersTable` (`fk_assignment_id`),
-  ADD KEY `fk_volunteerId_assignmentvolunteersTable` (`fk_volunteer_id`);
 
 --
 -- Indexes for table `event`
@@ -194,6 +247,18 @@ ALTER TABLE `event`
 ALTER TABLE `eventvolunteers`
   ADD KEY `fk_eventId_eventvolunteersTable` (`fk_event_id`),
   ADD KEY `fk_volunteerId_eventvolunteersTable` (`fk_volunteer_id`);
+
+--
+-- Indexes for table `jobinstance`
+--
+ALTER TABLE `jobinstance`
+  ADD PRIMARY KEY (`pk_id`);
+
+--
+-- Indexes for table `jobtype`
+--
+ALTER TABLE `jobtype`
+  ADD PRIMARY KEY (`pk_id`);
 
 --
 -- Indexes for table `organization`
@@ -213,45 +278,38 @@ ALTER TABLE `volunteer`
 --
 
 --
--- AUTO_INCREMENT for table `assignment`
---
-ALTER TABLE `assignment`
-  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `jobinstance`
+--
+ALTER TABLE `jobinstance`
+  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `jobtype`
+--
+ALTER TABLE `jobtype`
+  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `organization`
 --
 ALTER TABLE `organization`
-  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `volunteer`
 --
 ALTER TABLE `volunteer`
-  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `pk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `assignment`
---
-ALTER TABLE `assignment`
-  ADD CONSTRAINT `fk_eventId_assignmentTable` FOREIGN KEY (`fk_event_id`) REFERENCES `event` (`pk_id`);
-
---
--- Constraints for table `assignmentvolunteers`
---
-ALTER TABLE `assignmentvolunteers`
-  ADD CONSTRAINT `fk_assignmentId_assignmentvolunteersTable` FOREIGN KEY (`fk_assignment_id`) REFERENCES `assignment` (`pk_id`),
-  ADD CONSTRAINT `fk_volunteerId_assignmentvolunteersTable` FOREIGN KEY (`fk_volunteer_id`) REFERENCES `volunteer` (`pk_id`);
 
 --
 -- Constraints for table `event`
